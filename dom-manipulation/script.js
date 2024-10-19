@@ -150,10 +150,10 @@ let quotes =  [
   }
   
   // Add the export button to the HTML
-  const exportButton = document.createElement('button');
-  exportButton.textContent = 'Export Quotes as JSON';
-  exportButton.onclick = exportQuotes;
-  document.body.appendChild(exportButton);
+  const ExportQuotes = document.createElement('button');
+  ExportQuotes.textContent = 'Export Quotes as JSON';
+  ExportQuotes.onclick = exportQuotes;
+  document.body.appendChild(ExportQuotes);
  
   const inputchange = document.getElementById('importFile');
   inputchange.addEventListener('change', importFromJsonFile);
