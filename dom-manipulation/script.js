@@ -218,24 +218,20 @@ function filterQuotes() {
   
 }
 
-function populateCategories(){
-    const categoryFilter = document.getElementById('categoryFilter');
-    const uniqueCategories = new Set();
+function populateCategories() {
+  const categoryFilter = document.getElementById('categoryFilter');
+  const uniqueCategories = [...new Set(quotes.map(quote => quote.category))]; // Using map() to extract categories
 
-    quotes.forEach(quote => {
-      uniqueCategories.add(quote.category);
-    });
+  categoryFilter.innerHTML = '';
 
-    categoryFilter.innerHTML = '';
-
-    uniqueCategories.forEach(category =>{
-      const option = document.createElement('option');
-      option.value = category;
-      option.textContent = category; // Set the displayed text
-      categoryFilter.appendChild(option); // 
-    })
-
+  uniqueCategories.map(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category; // Set the displayed text
+    categoryFilter.appendChild(option); 
+  });
 }
+
 
 
 
