@@ -50,10 +50,20 @@ let quotes =  [
   const storedQuotes = localStorage.getItem('quoteData');
   if(storedQuotes){
     quotes = JSON.parse(storedQuotes);
-    LouadFromLocalStorage()
+    LouadFromLocalStorage();
   }else{
-    LouadFromLocalStorage()
- }}
+    LouadFromLocalStorage() ; 
+ }populateCategories();
+
+ const lastSelectedCategory = localStorage.getItem('lastSelectedCategory');
+ if (lastSelectedCategory) {
+     const categoryDropdown = document.getElementById('categoryFilter');
+     categoryDropdown.value = lastSelectedCategory;
+     filterQuotes(); // Call filterQuotes to display the correct quotes
+ }
+
+
+}
 
 
 
@@ -183,6 +193,55 @@ function importFromJsonFile(event) {
     
     fileReader.readAsText(event.target.files[0]);
 }
+
+function filterQuotes() {
+  const selectedCategory = document.getElementById('categoryFilter').value;
+  const quoteDisplay = document.getElementById('quoteDisplay');
+  
+  // Clear the current displayed quotes
+  quoteDisplay.innerHTML = '';
+
+  // Filter quotes based on the selected category
+  const filteredQuotes = quotes.filter(quote => {
+      return quote.category === selectedCategory || selectedCategory === 'All'; // 'All' option to show all quotes
+  });
+
+  // Display the filtered quotes
+  filteredQuotes.forEach(quote => {
+    desplayQuotes(quote);
+  });
+
+
+
+  localStorage.setItem('lastSelectedCategory', selectedCategory);
+
+  
+}
+
+function populateCategories(){
+    const categoryFilter = document.getElementById('categoryFilter');
+    const uniqueCategories = new Set();
+
+    quotes.forEach(quote => {
+      uniqueCategories.add(quote.category);
+    });
+
+    categoryFilter.innerHTML = '';
+
+    uniqueCategories.forEach(category =>{
+      const option = document.createElement('option');
+      option.value = category;
+      option.textContent = category; // Set the displayed text
+      categoryFilter.appendChild(option); // 
+    })
+
+}
+
+
+
+const categoryFilter = document.getElementById('categoryFilter');
+categoryFilter.addEventListener('change', filterQuotes);
+
 
 
 
