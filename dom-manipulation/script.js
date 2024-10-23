@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
       serverQuotes.forEach(serverQuote => {
           const localQuote = storedQuotes.find(quote => quote.text === serverQuote.text);
           if (!localQuote) {
+            alert('Quotes synced with server!');
               storedQuotes.push(serverQuote);
               displayQuotes(serverQuote);
           } else if (localQuote.category !== serverQuote.category) {
