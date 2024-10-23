@@ -2,90 +2,98 @@
 
 
 document.addEventListener('DOMContentLoaded', function () {
-  let quotes =  []  ;
+  let quotes = [
+      {
+          text: "Java is to JavaScript what car is to Carpet.",
+          category: "Humor"
+      },
+      // Other quotes...
+  ];
 
-    getQuotes();
-    startPeriodicSync();
+  getQuotes();
+  startPeriodicSync();
 
-    function getQuotes() {
-        const storedQuotes = localStorage.getItem('quoteData');
-        if (storedQuotes) {
-            quotes = JSON.parse(storedQuotes);
-            loadFromLocalStorage();
-        } else {
-            loadFromLocalStorage();
-        }
-        populateCategories();
-    }
+  async function postQuoteToServer(newQuote) {
+      try {
+          const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(newQuote)
+          });
 
-    function loadFromLocalStorage() {
-        quotes.forEach(quote => displayQuotes(quote));
-    }
+          const postedQuote = await response.json();
+          console.log('Quote posted to server:', postedQuote);
+          return postedQuote;
+      } catch (error) {
+          console.error('Error posting quote to server:', error);
+      }
+  }
 
-    function startPeriodicSync() {
-        setInterval(async () => {
-            const serverQuotes = await fetchQuotesFromServer();
-            syncWithServer(serverQuotes);
-        }, 60000);
-    }
+  function getQuotes() {
+      const storedQuotes = localStorage.getItem('quoteData');
+      if (storedQuotes) {
+          quotes = JSON.parse(storedQuotes);
+          loadFromLocalStorage();
+      } else {
+          loadFromLocalStorage();
+      }
+      populateCategories();
+  }
 
-    function fetchQuotesFromServer() {
-        return fetch('https://jsonplaceholder.typicode.com/posts')
-            .then(response => response.json())
-            .catch(error => console.error('Error fetching server data:', error));
-    }
+  function loadFromLocalStorage() {
+      quotes.forEach(quote => displayQuotes(quote));
+  }
 
-    function syncWithServer(serverQuotes) {
-        const storedQuotes = JSON.parse(localStorage.getItem('quoteData')) || [];
+  function addQuote() {
+      const newQuoteText = document.getElementById('newQuoteText').value.trim();
+      const newQuoteCategory = document.getElementById('newQuoteCategory').value.trim();
+      const newQuote = {
+          text: newQuoteText,
+          category: newQuoteCategory
+      };
 
-        serverQuotes.forEach(serverQuote => {
-            const localQuote = storedQuotes.find(quote => quote.text === serverQuote.text);
-            if (!localQuote) {
-                storedQuotes.push(serverQuote);
-                displayQuotes(serverQuote);
-            } else if (localQuote.category !== serverQuote.category) {
-                const resolvedQuote = resolveConflict(localQuote, serverQuote);
-                notifyUser('Conflict detected and resolved.');
-                localQuote.category = resolvedQuote.category;
-            }
-        });
+      // Push the new quote to the local array and save locally
+      quotes.push(newQuote);
+      saveQuotes();
+      displayQuotes(newQuote);
 
-        localStorage.setItem('quoteData', JSON.stringify(storedQuotes));
-    }
+      // Post the new quote to the server
+      postQuoteToServer(newQuote);
+  }
 
-    function resolveConflict(localQuote, serverQuote) {
-        return serverQuote;
-    }
+  function saveQuotes() {
+      const stringifyQuotes = JSON.stringify(quotes);
+      localStorage.setItem('quoteData', stringifyQuotes);
+  }
 
-    function notifyUser(message) {
-        const notification = document.createElement('div');
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        setTimeout(() => document.body.removeChild(notification), 5000);
-    }
+  function displayQuotes(quote) {
+      const quoteDisplay = document.getElementById('quoteDisplay');
+      const qouteText = document.createElement('p');
+      qouteText.textContent = `quote: ${quote.text}`;
+      const qouteCategory = document.createElement('p');
+      qouteCategory.textContent = `Category: ${quote.category}`;
 
-    function displayQuotes(quote) {
-        const quoteDisplay = document.getElementById('quoteDisplay');
-        const qouteText = document.createElement('p');
-        qouteText.textContent = `quote: ${quote.text}`;
-        const qouteCategory = document.createElement('p');
-        qouteCategory.textContent = `Category: ${quote.category}`;
+      quoteDisplay.appendChild(qouteText);
+      quoteDisplay.appendChild(qouteCategory);
+  }
 
-        quoteDisplay.appendChild(qouteText);
-        quoteDisplay.appendChild(qouteCategory);
-    }
+  function populateCategories() {
+      const categoryFilter = document.getElementById('categoryFilter');
+      const uniqueCategories = [...new Set(quotes.map(quote => quote.category))];
 
-    function populateCategories() {
-        const categoryFilter = document.getElementById('categoryFilter');
-        const uniqueCategories = [...new Set(quotes.map(quote => quote.category))];
+      categoryFilter.innerHTML = '';
 
-        categoryFilter.innerHTML = '';
+      uniqueCategories.map(category => {
+          const option = document.createElement('option');
+          option.value = category;
+          option.textContent = category;
+          categoryFilter.appendChild(option);
+      });
+  }
 
-        uniqueCategories.map(category => {
-            const option = document.createElement('option');
-            option.value = category;
-            option.textContent = category;
-            categoryFilter.appendChild(option);
-        });
-    }
+  // Button to add a new quote
+  const addQuoteButton = document.getElementById('addQuoteButton');
+  addQuoteButton.addEventListener('click', addQuote);
 });
