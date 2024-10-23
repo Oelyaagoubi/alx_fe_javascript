@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function startPeriodicSync() {
       setInterval(async () => {
           const serverQuotes = await fetchQuotesFromServer();
-          syncWithServer(serverQuotes);
+          syncQuotes(serverQuotes);
       }, 60000);
   }
 
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
           .catch(error => console.error('Error fetching server data:', error));
   }
 
-  function syncWithServer(serverQuotes) {
+  function syncQuotes(serverQuotes) {
       const storedQuotes = JSON.parse(localStorage.getItem('quoteData')) || [];
 
       serverQuotes.forEach(serverQuote => {
