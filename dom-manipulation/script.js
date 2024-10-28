@@ -1,6 +1,33 @@
 document.addEventListener('DOMContentLoaded', function () {
   let quotes = [
-    // Sample quotes array
+    {
+      text: "The only way to do great work is to love what you do.",
+      category: "Inspiration"
+    },
+    {
+      text: "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+      category: "Motivation"
+    },
+    {
+      text: "Don’t let yesterday take up too much of today.",
+      category: "Advice"
+    },
+    {
+      text: "If you set your goals ridiculously high and it’s a failure, you will fail above everyone else’s success.",
+      category: "Aspiration"
+    },
+    {
+      text: "The future belongs to those who believe in the beauty of their dreams.",
+      category: "Dreams"
+    },
+    {
+      text: "You only live once, but if you do it right, once is enough.",
+      category: "Life"
+    },
+    {
+      text: "Do not wait to strike till the iron is hot, but make it hot by striking.",
+      category: "Action"
+    }
   ];
 
   getQuotes();
@@ -133,6 +160,11 @@ document.addEventListener('DOMContentLoaded', function () {
       // Post the new quote to the server
       postQuoteToServer(newQuote);
     }
+  }
+  function filterQuote(){
+    const index = Math.floor(Math.random * quotes.length);
+    let filtedQoutes = quotes[index] ;
+    quotes = filtedQoutes ;
   }
 
   // Add event listener for the addQuote function
