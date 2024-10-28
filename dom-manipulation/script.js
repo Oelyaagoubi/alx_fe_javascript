@@ -22,6 +22,14 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error('Error posting quote to server:', error);
     }
   }
+  function FilterQuotes(param){
+    const quoteDisplay = document.getElementById('quoteDisplay');
+    quoteDisplay.textContent = '';
+    const quotesByCategory = quotes.filter(quote => quote.category === param);
+    quotesByCategory.forEach(quote =>displayQuotes(quote) );
+    
+    localStorage.setItem('storedCategory' , JSON.stringify(quotesByCategory));
+  }
 
   function getQuotes() {
       const storedQuotes = localStorage.getItem('quoteData');
