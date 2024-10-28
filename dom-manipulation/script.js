@@ -161,11 +161,25 @@ document.addEventListener('DOMContentLoaded', function () {
       postQuoteToServer(newQuote);
     }
   }
-  function filterQuote(){
-    const index = Math.floor(Math.random * quotes.length);
-    let filtedQoutes = quotes[index] ;
-    quotes = filtedQoutes ;
+  function filtedQoute(param){
+    const quoteDisplay = document.getElementById('quoteDisplay');
+    quoteDisplay.textContent = '';
+    const quotesByCategory = quotes.filter(quote => quote.category === param);
+    quotesByCategory.forEach(quote =>displayQuotes(quote) );
+    
+    localStorage.setItem('storedCategory' , JSON.stringify(quotesByCategory));
   }
+  const categoryFilter = document.getElementById('categoryFilter');
+  categoryFilter.addEventListener('change', function(event){
+    const selectedCategory = event.target.value ; 
+    displayByCategory(selectedCategory);
+
+
+  // function filterQuote(){
+  //   const index = Math.floor(Math.random * quotes.length);
+  //   let filtedQoutes = quotes[index] ;
+  //   quotes = filtedQoutes ;
+  // }
 
   // Add event listener for the addQuote function
   const addQuoteButton = document.getElementById('addQuoteButton');
